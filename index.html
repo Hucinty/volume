@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Minimal Pastel Volume Tile</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            pastel: {
+              cream: '#FAF7F2',
+              creamDark: '#F3EFE8',
+              lavender: '#C4B5FD',
+              lavenderLight: '#EDE9FE',
+              peach: '#FECDD3',
+              peachLight: '#FFE4E6',
+              mint: '#A7F3D0',
+              mintLight: '#D1FAE5',
+              sky: '#BAE6FD',
+              skyLight: '#E0F2FE',
+              butter: '#FEF08A',
+              butterLight: '#FEF9C3',
+              ink: '#2E2836',
+              inkMuted: '#7A7285',
+              borderLight: 'rgba(215, 208, 200, 0.55)',
+              darkBg: '#181622',
+              darkSurface: '#221F2F',
+              darkSurfaceAlt: '#2B273B',
+              darkText: '#F3EFFC',
+              darkMuted: '#9B93A8'
+            }
+          },
+          fontFamily: {
+            sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Minimal Pastel Styling & Smooth Transitions */
+    :root {
+      --pastel-primary-start: #C4B5FD;
+      --pastel-primary-mid: #DDD6FE;
+      --pastel-primary-end: #E0E7FF;
+      --pastel-glow: rgba(196, 181, 253, 0.45);
+      --pastel-text: #2E2836;
+      --pastel-bg-track: rgba(0, 0, 0, 0.04);
+      --pastel-bg-track-dark: rgba(255, 255, 255, 0.08);
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: #FAF7F2;
+      color: #2E2836;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    body.dark {
+      background-color: #161420;
+      color: #F3EFFC;
+    }
+
+    /* Soft Pastel Glass Surface */
+    .pastel-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 20px 45px -15px rgba(180, 160, 190, 0.2), 0 4px 15px -4px rgba(0, 0, 0, 0.03);
+    }
+
+    body.dark .pastel-card {
+      background: rgba(34, 31, 47, 0.88);
+      box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.4), 0 4px 15px -4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Status Bar Pill & Quick Tiles */
+    .status-bar-pill {
+      box-shadow: 0 2px 10px -2px rgba(0, 0, 0, 0.06);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .status-bar-pill:hover {
+      transform: translateY(-0.5px);
+      box-shadow: 0 4px 14px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Slider Track */
+    .slider-track {
+      touch-action: none;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .slider-fill {
+      will-change: width, height, transform;
+      transition: width 80ms cubic-bezier(0.16, 1, 0.3, 1), height 80ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slider-thumb {
+      will-change: transform, left, bottom;
+      transition: transform 140ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .dragging .slider-fill,
+    .dragging .slider-thumb {
+      transition: none !important;
+    }
+
+    .dragging .slider-container {
+      transform: scale(1.015);
+      transition: transform 120ms ease;
+    }
+
+    .pastel-pill {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .pastel-pill:active {
+      transform: scale(0.96);
+    }
+
+    /* Visualizer Bar Smooth Transition */
+    .visualizer-bar {
+      transition: height 90ms ease, background-color 0.3s ease;
+    }
+
+    /* Palette Color Themes */
+    .palette-lilac {
+      --pastel-primary-start: #C4B5FD;
+      --pastel-primary-mid: #DDD6FE;
+      --pastel-primary-end: #E9D5FF;
+      --pastel-glow: rgba(196, 181, 253, 0.45);
+    }
+
+    .palette-peach {
+      --pastel-primary-start: #FECDD3;
+      --pastel-primary-mid: #FDE2E4;
+      --pastel-primary-end: #FBCFE8;
+      --pastel-glow: rgba(254, 205, 211, 0.55);
+    }
+
+    .palette-mint {
+      --pastel-primary-start: #A7F3D0;
+      --pastel-primary-mid: #BBF7D0;
+      --pastel-primary-end: #CCFBF1;
+      --pastel-glow: rgba(167, 243, 208, 0.55);
+    }
+
+    .palette-sky {
+      --pastel-primary-start: #BAE6FD;
+      --pastel-primary-mid: #C7D2FE;
+      --pastel-primary-end: #E0F2FE;
+      --pastel-glow: rgba(186, 230, 253, 0.55);
+    }
+
+    .palette-butter {
+      --pastel-primary-start: #FEF08A;
+      --pastel-primary-mid: #FED7AA;
+      --pastel-primary-end: #FEF9C3;
+      --pastel-glow: rgba(254, 240, 138, 0.55);
+    }
+
+    .dynamic-slider-gradient {
+      background: linear-gradient(90deg, var(--pastel-primary-start), var(--pastel-primary-mid), var(--pastel-primary-end));
+    }
+
+    .dynamic-slider-gradient-vertical {
+      background: linear-gradient(180deg, var(--pastel-primary-end), var(--pastel-primary-mid), var(--pastel-primary-start));
+    }
+
+    /* Quick Settings Notification Shade Pull-down Animation */
+    #quickSettingsShade {
+      transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #quickSettingsShade.collapsed {
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    #quickSettingsShade.expanded {
+      max-height: 280px;
+      opacity: 1;
+      transform: translateY(0);
+      overflow: visible;
+    }
+
+    /* Custom Slim Scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(180, 170, 190, 0.3);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="palette-lilac min-h-screen flex flex-col antialiased selection:bg-purple-200">
+
+  <!-- ============================================== -->
+  <!-- 1. ANDROID STATUS BAR WITH INLINE VOLUME TILE -->
+  <!-- ============================================== -->
+  <aside class="w-full bg-white/80 dark:bg-stone-900/80 backdrop-blur-xl border-b border-stone-200/60 dark:border-stone-800/70 sticky top-0 z-50 transition-colors">
+    <div class="max-w-xl mx-auto px-4 py-2 flex items-center justify-between gap-2">
+      
+      <!-- Status Bar Left: Live Clock & Notification Dot -->
+      <div class="flex items-center gap-2">
+        <span id="statusBarClock" class="text-xs font-semibold tracking-tight text-slate-700 dark:text-slate-200 tabular-nums">09:41</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-purple-400 dark:bg-purple-300 animate-pulse"></span>
+        <span class="text-[10px] font-medium text-slate-400 dark:text-slate-500 hidden sm:inline">Media</span>
+      </div>
+
+      <!-- Status Bar Center: INTERACTIVE VOLUME TILE PILL (Dynamic Status Bar Tile) -->
+      <div id="statusBarVolumeTile" class="status-bar-pill flex items-center gap-2 px-3 py-1 rounded-full bg-stone-100/90 dark:bg-stone-800/90 border border-stone-200/80 dark:border-stone-700/80 cursor-pointer active:scale-98 transition-all hover:bg-white dark:hover:bg-stone-750" title="Click to toggle Quick Settings shade, drag to adjust volume">
+        <!-- Speaker Icon -->
+        <button id="statusBarMuteBtn" class="text-xs text-slate-700 dark:text-slate-200 hover:scale-110 active:scale-95 transition-transform" aria-label="Toggle mute in status bar">
+          <span id="statusBarSpeakerIcon">🔊</span>
+        </button>
+
+        <!-- Mini Live Slider Progress Bar inside Status Bar -->
+        <div id="statusBarTrack" class="slider-track relative w-16 sm:w-20 h-2 bg-stone-200/80 dark:bg-stone-700/80 rounded-full overflow-hidden">
+          <div id="statusBarFill" class="slider-fill dynamic-slider-gradient h-full rounded-full" style="width: 70%;"></div>
+        </div>
+
+        <!-- Live Volume Percent Text -->
+        <span id="statusBarPercentText" class="text-[11px] font-bold text-slate-800 dark:text-slate-100 tabular-nums min-w-[28px] text-right">70%</span>
+
+        <!-- Quick Settings Shade Dropdown Arrow -->
+        <svg id="shadeChevronIcon" class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+
+      <!-- Status Bar Right: Wifi, Signal & Battery Pill -->
+      <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+        <!-- Signal Bars -->
+        <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L12 22l7.03-4.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9zm0 2c3.87 0 7 3.13 7 7 0 1.54-.5 2.97-1.35 4.13L12 19.6l-5.65-3.47C5.5 14.97 5 13.54 5 12c0-3.87 3.13-7 7-7z"/>
+        </svg>
+        <!-- Wifi Icon -->
+        <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M17.778 8.222c-4.296-4.296-11.26-4.296-15.556 0A1 1 0 01.808 6.808c5.076-5.077 13.308-5.077 18.384 0a1 1 0 01-1.414 1.414zM14.95 11.05a7 7 0 00-9.9 0 1 1 0 01-1.414-1.414 9 9 0 0112.728 0 1 1 0 01-1.414 1.414zm-2.828 2.828a3 3 0 00-4.243 0 1 1 0 01-1.414-1.414 5 5 0 017.07 0 1 1 0 01-1.413 1.414zm-1.414 2.829a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+        </svg>
+        <!-- Battery Pill -->
+        <div class="flex items-center gap-0.5 bg-stone-100 dark:bg-stone-800 px-1.5 py-0.5 rounded-full border border-stone-200/60 dark:border-stone-700/60">
+          <span class="text-[10px] font-semibold text-slate-700 dark:text-slate-200 tabular-nums">98%</span>
+          <div class="w-3.5 h-2 rounded-[2px] border border-slate-500 dark:border-slate-400 p-[1px] flex items-center">
+            <div class="h-full bg-emerald-500 rounded-[1px] w-[90%]"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 2. QUICK SETTINGS SHADE / TOP NAV TILES BAR -->
+    <!-- ============================================== -->
+    <div id="quickSettingsShade" class="collapsed max-w-xl mx-auto px-4 pb-3">
+      <div class="p-3.5 rounded-2xl bg-stone-100/90 dark:bg-stone-800/90 border border-stone-200/80 dark:border-stone-750 shadow-sm flex flex-col gap-3">
+        <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-medium px-1">
+          <span>Quick Settings Status Bar Tiles</span>
+          <span class="text-[10px] text-purple-600 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/40 px-2 py-0.5 rounded-full">Active Tile</span>
+        </div>
+
+        <!-- Row of Quick Navigation Tiles in Status Bar Header -->
+        <div class="grid grid-cols-4 gap-2">
+          <!-- Tile 1: Sound FX -->
+          <button id="toggleSoundFeedbackBtn" class="p-2 rounded-xl bg-white dark:bg-stone-700 hover:bg-stone-50 border border-stone-200/60 dark:border-stone-600 flex flex-col items-center gap-1 transition-all active:scale-95 shadow-2xs">
+            <span id="soundFeedbackStatusIcon" class="text-base">🔔</span>
+            <span id="soundFeedbackStatusText" class="text-[10px] font-medium text-slate-700 dark:text-slate-200">Chime On</span>
+          </button>
+
+          <!-- Tile 2: Layout (Horizontal Pill / Vertical Capsule) -->
+          <button id="toggleLayoutBtn" class="p-2 rounded-xl bg-white dark:bg-stone-700 hover:bg-stone-50 border border-stone-200/60 dark:border-stone-600 flex flex-col items-center gap-1 transition-all active:scale-95 shadow-2xs">
+            <span id="layoutModeIcon" class="text-base">↔️</span>
+            <span id="layoutModeText" class="text-[10px] font-medium text-slate-700 dark:text-slate-200">Pill Mode</span>
+          </button>
+
+          <!-- Tile 3: Dark / Light Mode -->
+          <button id="toggleThemeBtn" class="p-2 rounded-xl bg-white dark:bg-stone-700 hover:bg-stone-50 border border-stone-200/60 dark:border-stone-600 flex flex-col items-center gap-1 transition-all active:scale-95 shadow-2xs">
+            <span id="themeModeIcon" class="text-base">☀️</span>
+            <span id="themeModeText" class="text-[10px] font-medium text-slate-700 dark:text-slate-200">Light Mode</span>
+          </button>
+
+          <!-- Tile 4: Tone Synthesizer Preview -->
+          <button id="shadeSynthTileBtn" class="p-2 rounded-xl bg-white dark:bg-stone-700 hover:bg-stone-50 border border-stone-200/60 dark:border-stone-600 flex flex-col items-center gap-1 transition-all active:scale-95 shadow-2xs">
+            <span id="shadeSynthIcon" class="text-base">🎵</span>
+            <span id="shadeSynthText" class="text-[10px] font-medium text-slate-700 dark:text-slate-200">Test Tone</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============================================== -->
+  <!-- 3. MAIN CONTENT: MINIMAL PASTEL CARD -->
+  <!-- ============================================== -->
+  <main class="flex-1 max-w-xl w-full mx-auto px-4 sm:px-6 py-5 flex flex-col items-center justify-center gap-4">
+
+    <!-- Pastel Palette Color Pickers -->
+    <div class="flex items-center justify-center gap-2 p-1.5 rounded-full bg-stone-200/40 dark:bg-stone-800/40 backdrop-blur-sm border border-stone-200/60 dark:border-stone-700/50">
+      <button class="palette-btn w-6 h-6 rounded-full bg-[#C4B5FD] ring-2 ring-purple-400 ring-offset-2 ring-offset-white dark:ring-offset-stone-900 transition-all scale-110" data-theme="palette-lilac" title="Lilac Lavender"></button>
+      <button class="palette-btn w-6 h-6 rounded-full bg-[#FECDD3] ring-0 transition-all hover:scale-105" data-theme="palette-peach" title="Peach Blossom"></button>
+      <button class="palette-btn w-6 h-6 rounded-full bg-[#A7F3D0] ring-0 transition-all hover:scale-105" data-theme="palette-mint" title="Matcha Mint"></button>
+      <button class="palette-btn w-6 h-6 rounded-full bg-[#BAE6FD] ring-0 transition-all hover:scale-105" data-theme="palette-sky" title="Cloud Sky"></button>
+      <button class="palette-btn w-6 h-6 rounded-full bg-[#FEF08A] ring-0 transition-all hover:scale-105" data-theme="palette-butter" title="Butter Cream"></button>
+    </div>
+
+    <!-- Category Pills (Media, Ring, Alarm, Call) -->
+    <div class="flex items-center gap-1.5 p-1 bg-white/70 dark:bg-stone-900/60 rounded-full border border-stone-200/70 dark:border-stone-800 shadow-2xs">
+      <button class="stream-btn active px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-800 dark:text-slate-100 bg-pastel-lavenderLight dark:bg-purple-900/40 shadow-xs transition-all" data-stream="media">
+        Media
+      </button>
+      <button class="stream-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 transition-all" data-stream="ring">
+        Ring
+      </button>
+      <button class="stream-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 transition-all" data-stream="alarm">
+        Alarm
+      </button>
+      <button class="stream-btn px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-100 transition-all" data-stream="call">
+        Call
+      </button>
+    </div>
+
+    <!-- MAIN MINIMAL PASTEL CARD -->
+    <div class="pastel-card w-full rounded-[36px] p-6 sm:p-7 border border-stone-200/70 dark:border-stone-800 relative overflow-hidden transition-all duration-300">
+      
+      <!-- Top Row: Stream Title & Big Modern Percentage -->
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <div class="flex items-center gap-2">
+            <span id="currentStreamLabel" class="text-sm font-semibold tracking-tight text-slate-800 dark:text-slate-100">Media Volume</span>
+            <span id="muteStatusBadge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-300 hidden">Muted</span>
+          </div>
+          <p id="streamMoodSubtitle" class="text-xs text-slate-400 dark:text-slate-400 font-normal">Connected to Status Bar Tile</p>
+        </div>
+
+        <!-- Clean Minimal Numeric Indicator -->
+        <div class="flex items-baseline gap-0.5">
+          <span id="volumePercentDisplay" class="text-3xl font-light tracking-tighter text-slate-800 dark:text-slate-100 tabular-nums">70</span>
+          <span class="text-xs font-medium text-slate-400">%</span>
+        </div>
+      </div>
+
+      <!-- SLIDER CONTAINER AREA -->
+      <div id="sliderTileWrapper" class="relative flex flex-col items-center justify-center my-3">
+        
+        <!-- 1. HORIZONTAL SLIDER VIEW (Minimalist Pill) -->
+        <div id="horizontalSliderView" class="w-full">
+          <div class="slider-container relative w-full h-18 sm:h-20 bg-stone-100/90 dark:bg-stone-800/80 rounded-full p-2 flex items-center border border-stone-200/70 dark:border-stone-700/60 shadow-inner overflow-hidden transition-all">
+            
+            <!-- Dynamic Filled Pastel Gradient Track -->
+            <div id="horizontalFillTrack" class="slider-fill dynamic-slider-gradient absolute top-0 left-0 bottom-0 rounded-full pointer-events-none shadow-xs" style="width: 70%;"></div>
+
+            <!-- Soft Leading Glow Accent Line -->
+            <div id="horizontalGlowEdge" class="absolute top-0 bottom-0 w-2 bg-white/50 blur-[2px] pointer-events-none transition-all" style="left: calc(70% - 4px);"></div>
+
+            <!-- Interactive Surface & Inner Contents -->
+            <div id="horizontalTrackArea" class="slider-track relative z-10 w-full h-full flex items-center justify-between px-2.5 select-none">
+              
+              <!-- Dynamic Speaker Icon Button (Toggles Mute) -->
+              <button id="horizontalMuteIconBtn" aria-label="Toggle mute" class="w-11 h-11 rounded-full bg-white/80 dark:bg-stone-900/60 hover:bg-white dark:hover:bg-stone-900 active:scale-95 text-slate-700 dark:text-slate-200 flex items-center justify-center transition-all shadow-xs backdrop-blur-sm">
+                <span id="speakerIconContainerH" class="transition-transform duration-200"></span>
+              </button>
+
+              <!-- Center Interactive Drag Area Guide -->
+              <div class="flex-1 px-4 flex items-center justify-between text-xs font-medium tracking-wide text-slate-700/90 dark:text-slate-200/90 pointer-events-none">
+                <span id="volumeLevelDescriptor" class="text-[11px] font-semibold tracking-wider text-slate-600 dark:text-slate-300">Comfortable</span>
+                <span id="internalPercentH" class="text-xs font-bold tabular-nums">70%</span>
+              </div>
+
+              <!-- Draggable Thumb Capsule Handle -->
+              <div id="horizontalThumb" class="slider-thumb w-3.5 h-9 rounded-full bg-white shadow-md flex items-center justify-center cursor-grab active:cursor-grabbing border border-stone-200/50">
+                <div class="w-1 h-2 rounded-full bg-stone-300"></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 2. VERTICAL SLIDER VIEW (Minimalist Capsule) -->
+        <div id="verticalSliderView" class="w-full hidden flex-col items-center">
+          <div class="slider-container relative w-28 h-64 bg-stone-100/90 dark:bg-stone-800/80 rounded-[44px] p-2 flex flex-col items-center justify-between border border-stone-200/70 dark:border-stone-700/60 shadow-inner overflow-hidden transition-all">
+            
+            <!-- Dynamic Bottom-to-Top Filled Pastel Track -->
+            <div id="verticalFillTrack" class="slider-fill dynamic-slider-gradient-vertical absolute bottom-0 left-0 right-0 rounded-[44px] pointer-events-none shadow-xs" style="height: 70%;"></div>
+
+            <!-- Soft Leading Glow Accent Line -->
+            <div id="verticalGlowEdge" class="absolute left-0 right-0 h-2 bg-white/50 blur-[2px] pointer-events-none transition-all" style="bottom: calc(70% - 4px);"></div>
+
+            <!-- Interactive Surface & Inner Contents -->
+            <div id="verticalTrackArea" class="slider-track relative z-10 w-full h-full flex flex-col items-center justify-between py-3 select-none">
+              
+              <!-- Top Percent Inside Capsule -->
+              <div class="pt-1 flex flex-col items-center pointer-events-none">
+                <span id="internalPercentV" class="text-sm font-bold text-slate-700 dark:text-slate-100 tabular-nums">70%</span>
+                <span id="volumeLevelDescriptorV" class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Comfortable</span>
+              </div>
+
+              <!-- Center Thumb Accent -->
+              <div id="verticalThumb" class="slider-thumb w-8 h-2.5 rounded-full bg-white shadow-sm flex items-center justify-center cursor-grab active:cursor-grabbing">
+                <div class="w-3 h-0.5 bg-stone-400 rounded-full"></div>
+              </div>
+
+              <!-- Bottom Dynamic Speaker Icon Button -->
+              <button id="verticalMuteIconBtn" aria-label="Toggle mute" class="w-11 h-11 rounded-full bg-white/80 dark:bg-stone-900/60 hover:bg-white dark:hover:bg-stone-900 active:scale-95 text-slate-700 dark:text-slate-200 flex items-center justify-center transition-all shadow-xs backdrop-blur-sm">
+                <span id="speakerIconContainerV" class="transition-transform duration-200"></span>
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Preset Candy Buttons (0%, 25%, 50%, 75%, 100%) -->
+      <div class="mt-5">
+        <div class="text-[11px] font-medium text-slate-400 dark:text-slate-400 mb-2 tracking-wider flex items-center justify-between">
+          <span>Presets</span>
+          <span class="text-[10px] text-slate-400">Tap to jump</span>
+        </div>
+        <div class="grid grid-cols-5 gap-2">
+          <button class="preset-btn py-2 rounded-2xl bg-stone-100/80 dark:bg-stone-800/80 hover:bg-stone-200/70 text-xs font-medium text-slate-600 dark:text-slate-300 border border-stone-200/60 dark:border-stone-700/50 transition-all flex flex-col items-center justify-center" data-val="0">
+            <span>0%</span>
+            <span class="text-[9px] font-normal text-slate-400">Mute</span>
+          </button>
+          <button class="preset-btn py-2 rounded-2xl bg-stone-100/80 dark:bg-stone-800/80 hover:bg-stone-200/70 text-xs font-medium text-slate-600 dark:text-slate-300 border border-stone-200/60 dark:border-stone-700/50 transition-all flex flex-col items-center justify-center" data-val="25">
+            <span>25%</span>
+            <span class="text-[9px] font-normal text-slate-400">Soft</span>
+          </button>
+          <button class="preset-btn py-2 rounded-2xl bg-stone-100/80 dark:bg-stone-800/80 hover:bg-stone-200/70 text-xs font-medium text-slate-600 dark:text-slate-300 border border-stone-200/60 dark:border-stone-700/50 transition-all flex flex-col items-center justify-center" data-val="50">
+            <span>50%</span>
+            <span class="text-[9px] font-normal text-slate-400">Mid</span>
+          </button>
+          <button class="preset-btn py-2 rounded-2xl bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-semibold border border-purple-200/70 dark:border-purple-800/60 transition-all flex flex-col items-center justify-center shadow-xs" data-val="70">
+            <span>70%</span>
+            <span class="text-[9px] font-normal text-purple-600 dark:text-purple-300">Calm</span>
+          </button>
+          <button class="preset-btn py-2 rounded-2xl bg-stone-100/80 dark:bg-stone-800/80 hover:bg-stone-200/70 text-xs font-medium text-slate-600 dark:text-slate-300 border border-stone-200/60 dark:border-stone-700/50 transition-all flex flex-col items-center justify-center" data-val="100">
+            <span>100%</span>
+            <span class="text-[9px] font-normal text-slate-400">Max</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Subtle Tone Preview & Mini Visualizer -->
+      <div class="mt-5 p-3 rounded-2xl bg-stone-100/60 dark:bg-stone-800/40 border border-stone-200/60 dark:border-stone-700/40 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <button id="playAudioPreviewBtn" class="w-9 h-9 rounded-full bg-white dark:bg-stone-700 hover:bg-purple-50 dark:hover:bg-purple-900/40 text-purple-600 dark:text-purple-300 flex items-center justify-center active:scale-95 shadow-xs transition-all border border-stone-200/60 dark:border-stone-600">
+            <svg id="playIconSvg" class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+            </svg>
+            <svg id="pauseIconSvg" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          <div>
+            <div class="text-xs font-medium text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+              <span>Acoustic Preview</span>
+              <span id="synthPlayingBadge" class="w-1.5 h-1.5 rounded-full bg-emerald-400 hidden animate-ping"></span>
+            </div>
+            <p class="text-[11px] text-slate-400" id="audioPreviewSubtitle">Tap to test soft ambient tone</p>
+          </div>
+        </div>
+
+        <!-- Mini Visualizer Waves -->
+        <div id="visualizerBars" class="flex items-end gap-1 h-5 px-1">
+          <div class="visualizer-bar w-1 bg-purple-300 dark:bg-purple-400 rounded-full h-1.5"></div>
+          <div class="visualizer-bar w-1 bg-purple-300 dark:bg-purple-400 rounded-full h-2.5"></div>
+          <div class="visualizer-bar w-1 bg-purple-400 dark:bg-purple-300 rounded-full h-4"></div>
+          <div class="visualizer-bar w-1 bg-sky-300 dark:bg-sky-400 rounded-full h-1.5"></div>
+          <div class="visualizer-bar w-1 bg-sky-300 dark:bg-sky-400 rounded-full h-3"></div>
+        </div>
+      </div>
+
+    <!-- ============================================== -->
+    <!-- HOME SCREEN WIDGET ("WINGET") & QUICK SETTINGS TILE -->
+    <!-- ============================================== -->
+    <div class="pastel-card w-full rounded-[32px] p-5 sm:p-6 border border-stone-200/70 dark:border-stone-800 flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="p-1.5 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-300">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+          </span>
+          <div>
+            <h3 class="text-xs font-bold text-slate-800 dark:text-slate-100">Android Home Screen Widget ("winget")</h3>
+            <p class="text-[10px] text-slate-400">Live synchronized widget simulation with direct controls</p>
+          </div>
+        </div>
+        <button id="widgetToggleSizeBtn" class="text-[10px] font-medium px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 text-slate-600 dark:text-slate-300 transition-all">4x2 Standard</button>
+      </div>
+
+      <!-- Live Home Screen Widget Container -->
+      <div id="simulatedWidgetContainer" class="p-4 rounded-3xl bg-[#FDFBF7] dark:bg-stone-850 border border-purple-200/80 dark:border-purple-800/60 shadow-xs flex flex-col gap-3">
+        <!-- Widget Header -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span id="widgetIcon" class="text-sm">🔊</span>
+            <div>
+              <div class="text-xs font-bold text-slate-800 dark:text-slate-100">Pastel Volume</div>
+              <div id="widgetStatusSubtitle" class="text-[9px] text-slate-400">Media Sound • Live Sync</div>
+            </div>
+          </div>
+          <span id="widgetPercentBadge" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300">70%</span>
+        </div>
+
+        <!-- Widget Progress Bar -->
+        <div id="widgetProgressBarTrack" class="slider-track relative w-full h-3 bg-stone-200/80 dark:bg-stone-700/80 rounded-full overflow-hidden cursor-pointer">
+          <div id="widgetProgressBarFill" class="slider-fill dynamic-slider-gradient h-full rounded-full" style="width: 70%;"></div>
+        </div>
+
+        <!-- Widget Button Controls -->
+        <div id="widgetControlsRow" class="flex items-center justify-between gap-1.5 pt-0.5">
+          <div class="flex items-center gap-1.5">
+            <button id="widgetBtnMute" class="w-8 h-8 rounded-xl bg-purple-50 dark:bg-stone-700 hover:bg-purple-100 text-slate-700 dark:text-slate-200 flex items-center justify-center active:scale-95 text-xs transition-all border border-purple-200/50" title="Mute/Unmute">🔇</button>
+            <button id="widgetBtnDown" class="w-8 h-8 rounded-xl bg-purple-50 dark:bg-stone-700 hover:bg-purple-100 text-slate-700 dark:text-slate-200 flex items-center justify-center active:scale-95 text-xs font-bold transition-all border border-purple-200/50" title="-10%">−</button>
+            <button id="widgetBtnUp" class="w-8 h-8 rounded-xl bg-purple-50 dark:bg-stone-700 hover:bg-purple-100 text-slate-700 dark:text-slate-200 flex items-center justify-center active:scale-95 text-xs font-bold transition-all border border-purple-200/50" title="+10%">+</button>
+          </div>
+          <div class="flex items-center gap-1">
+            <button class="widget-preset-btn text-[10px] font-semibold px-2 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-700 text-slate-600 dark:text-slate-300 hover:bg-purple-100" data-val="25">25%</button>
+            <button class="widget-preset-btn text-[10px] font-semibold px-2 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-700 text-slate-600 dark:text-slate-300 hover:bg-purple-100" data-val="70">70%</button>
+            <button class="widget-preset-btn text-[10px] font-semibold px-2 py-1.5 rounded-lg bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 font-bold" data-val="100">MAX</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Settings Tile Preview Inside Dropdown Shade -->
+      <div class="p-3.5 rounded-2xl bg-stone-900 text-white flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <button id="qsTileInteractiveBtn" class="w-12 h-12 rounded-2xl bg-purple-300 text-slate-800 flex items-center justify-center active:scale-95 transition-all shadow-sm">
+            <span id="qsTileIcon" class="text-base">🔊</span>
+          </button>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span id="qsTileLabel" class="text-xs font-bold text-white">Volume 70%</span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-purple-500/30 text-purple-300">QS Tile</span>
+            </div>
+            <p id="qsTileSubtitle" class="text-[10px] text-stone-400">Media Stream • Tap tile to cycle</p>
+          </div>
+        </div>
+        <button id="qsCycleStepBtn" class="text-[10px] font-medium px-2.5 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 active:scale-95 transition-all border border-stone-700">
+          Cycle Step ↻
+        </button>
+      </div>
+    </div>
+
+    <!-- Status Bar Quick Tile Info Hint -->
+    <div class="text-center text-xs text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1.5">
+      <span class="w-2 h-2 rounded-full bg-purple-400/60 inline-block"></span>
+      <span>Status Bar Tile active above • Drag top pill to adjust anytime</span>
+    </div>
+
+  </main>
+
+  <!-- ============================================== -->
+  <!-- JAVASCRIPT: Full Minimal State & Audio Engine -->
+  <!-- ============================================== -->
+  <script>
+    (function() {
+      'use strict';
+
+      // State
+      const state = {
+        volume: 70,
+        previousVolume: 70,
+        isMuted: false,
+        isDragging: false,
+        layout: 'horizontal',
+        isDark: false,
+        soundFeedback: true,
+        isPlayingTone: false,
+        shadeExpanded: false,
+        currentStream: 'media',
+        streamVolumes: {
+          media: 70,
+          ring: 60,
+          alarm: 85,
+          call: 65
+        }
+      };
+
+      let audioCtx = null;
+      let toneOscillator = null;
+      let toneGainNode = null;
+      let visualizerTimer = null;
+      let lastClickTickTime = 0;
+
+      // DOM Elements
+      const volumePercentDisplay = document.getElementById('volumePercentDisplay');
+      const internalPercentH = document.getElementById('internalPercentH');
+      const internalPercentV = document.getElementById('internalPercentV');
+      const volumeLevelDescriptor = document.getElementById('volumeLevelDescriptor');
+      const volumeLevelDescriptorV = document.getElementById('volumeLevelDescriptorV');
+      const horizontalFillTrack = document.getElementById('horizontalFillTrack');
+      const horizontalGlowEdge = document.getElementById('horizontalGlowEdge');
+      const horizontalTrackArea = document.getElementById('horizontalTrackArea');
+      const verticalFillTrack = document.getElementById('verticalFillTrack');
+      const verticalGlowEdge = document.getElementById('verticalGlowEdge');
+      const verticalTrackArea = document.getElementById('verticalTrackArea');
+      const speakerIconContainerH = document.getElementById('speakerIconContainerH');
+      const speakerIconContainerV = document.getElementById('speakerIconContainerV');
+      const muteStatusBadge = document.getElementById('muteStatusBadge');
+      const horizontalSliderView = document.getElementById('horizontalSliderView');
+      const verticalSliderView = document.getElementById('verticalSliderView');
+      const toggleLayoutBtn = document.getElementById('toggleLayoutBtn');
+      const layoutModeIcon = document.getElementById('layoutModeIcon');
+      const layoutModeText = document.getElementById('layoutModeText');
+      const toggleThemeBtn = document.getElementById('toggleThemeBtn');
+      const themeModeIcon = document.getElementById('themeModeIcon');
+      const themeModeText = document.getElementById('themeModeText');
+      const toggleSoundFeedbackBtn = document.getElementById('toggleSoundFeedbackBtn');
+      const soundFeedbackStatusIcon = document.getElementById('soundFeedbackStatusIcon');
+      const soundFeedbackStatusText = document.getElementById('soundFeedbackStatusText');
+      const playAudioPreviewBtn = document.getElementById('playAudioPreviewBtn');
+      const shadeSynthTileBtn = document.getElementById('shadeSynthTileBtn');
+      const shadeSynthIcon = document.getElementById('shadeSynthIcon');
+      const shadeSynthText = document.getElementById('shadeSynthText');
+      const playIconSvg = document.getElementById('playIconSvg');
+      const pauseIconSvg = document.getElementById('pauseIconSvg');
+      const synthPlayingBadge = document.getElementById('synthPlayingBadge');
+      const audioPreviewSubtitle = document.getElementById('audioPreviewSubtitle');
+      const currentStreamLabel = document.getElementById('currentStreamLabel');
+      const streamMoodSubtitle = document.getElementById('streamMoodSubtitle');
+      const visualizerBars = document.querySelectorAll('.visualizer-bar');
+
+      // Status Bar Elements
+      const statusBarClock = document.getElementById('statusBarClock');
+      const statusBarVolumeTile = document.getElementById('statusBarVolumeTile');
+      const statusBarMuteBtn = document.getElementById('statusBarMuteBtn');
+      const statusBarSpeakerIcon = document.getElementById('statusBarSpeakerIcon');
+      const statusBarTrack = document.getElementById('statusBarTrack');
+      const statusBarFill = document.getElementById('statusBarFill');
+      const statusBarPercentText = document.getElementById('statusBarPercentText');
+      const shadeChevronIcon = document.getElementById('shadeChevronIcon');
+      const quickSettingsShade = document.getElementById('quickSettingsShade');
+
+      // Live Clock in Status Bar
+      function updateClock() {
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        if (statusBarClock) statusBarClock.textContent = `${hrs}:${mins}`;
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      // Minimalist SVG Icons
+      const ICONS = {
+        mute: `
+          <svg class="w-5 h-5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+          </svg>
+        `,
+        low: `
+          <svg class="w-5 h-5 text-slate-700 dark:text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072" />
+          </svg>
+        `,
+        medium: `
+          <svg class="w-5 h-5 text-slate-700 dark:text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728" />
+          </svg>
+        `,
+        high: `
+          <svg class="w-5 h-5 text-slate-700 dark:text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M21.5 5.5a13 13 0 010 13" />
+          </svg>
+        `
+      };
+
+      // Sound Engine Init
+      function initAudio() {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) audioCtx = new AudioContextClass();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      }
+
+      // Soft Warm Kalimba / Sine Feedback Click
+      function playFeedbackTick(currentVal) {
+        if (!state.soundFeedback) return;
+        const now = performance.now();
+        if (now - lastClickTickTime < 45) return;
+        lastClickTickTime = now;
+
+        try {
+          initAudio();
+          if (!audioCtx) return;
+
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          const freq = 380 + (currentVal / 100) * 360;
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+          const clickGain = Math.max(0.015, (currentVal / 100) * 0.05);
+          gain.gain.setValueAtTime(clickGain, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.04);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.045);
+        } catch (e) {}
+      }
+
+      // Peaceful Chime on Mute/Unmute/Release
+      function playToneChime(freq = 523.25, duration = 0.15) {
+        if (!state.soundFeedback || state.isMuted || state.volume === 0) return;
+        try {
+          initAudio();
+          if (!audioCtx) return;
+
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          const volFactor = state.volume / 100;
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+          gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.08 * volFactor, audioCtx.currentTime + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration + 0.01);
+        } catch (e) {}
+      }
+
+      // Continuous Soft Tone Synthesizer
+      function toggleTonePreview() {
+        initAudio();
+        if (!audioCtx) return;
+        if (state.isPlayingTone) {
+          stopTonePreview();
+        } else {
+          startTonePreview();
+        }
+      }
+
+      function startTonePreview() {
+        if (state.isPlayingTone || !audioCtx) return;
+        state.isPlayingTone = true;
+
+        toneOscillator = audioCtx.createOscillator();
+        toneGainNode = audioCtx.createGain();
+
+        toneOscillator.type = 'sine';
+        toneOscillator.frequency.setValueAtTime(432, audioCtx.currentTime);
+
+        const currentVol = (state.isMuted ? 0 : state.volume) / 100;
+        toneGainNode.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        toneGainNode.gain.linearRampToValueAtTime(currentVol * 0.18, audioCtx.currentTime + 0.12);
+
+        toneOscillator.connect(toneGainNode);
+        toneGainNode.connect(audioCtx.destination);
+        toneOscillator.start();
+
+        playIconSvg.classList.add('hidden');
+        pauseIconSvg.classList.remove('hidden');
+        synthPlayingBadge.classList.remove('hidden');
+        audioPreviewSubtitle.textContent = 'Peaceful tone at ' + (state.isMuted ? 0 : state.volume) + '%';
+        shadeSynthText.textContent = 'Playing...';
+        shadeSynthIcon.textContent = '⏹️';
+
+        startVisualizerAnimation();
+      }
+
+      function stopTonePreview() {
+        if (!state.isPlayingTone) return;
+        state.isPlayingTone = false;
+
+        if (toneGainNode && audioCtx) {
+          toneGainNode.gain.linearRampToValueAtTime(0.0001, audioCtx.currentTime + 0.08);
+          setTimeout(() => {
+            try {
+              if (toneOscillator) {
+                toneOscillator.stop();
+                toneOscillator.disconnect();
+                toneOscillator = null;
+              }
+            } catch (e) {}
+          }, 90);
+        }
+
+        playIconSvg.classList.remove('hidden');
+        pauseIconSvg.classList.add('hidden');
+        synthPlayingBadge.classList.add('hidden');
+        audioPreviewSubtitle.textContent = 'Tap to test soft ambient tone';
+        shadeSynthText.textContent = 'Test Tone';
+        shadeSynthIcon.textContent = '🎵';
+        stopVisualizerAnimation();
+      }
+
+      function updateActiveToneVolume() {
+        if (state.isPlayingTone && toneGainNode && audioCtx) {
+          const effectiveVol = (state.isMuted ? 0 : state.volume) / 100;
+          toneGainNode.gain.setTargetAtTime(effectiveVol * 0.18, audioCtx.currentTime, 0.03);
+          audioPreviewSubtitle.textContent = 'Peaceful tone at ' + (state.isMuted ? 0 : state.volume) + '%';
+        }
+      }
+
+      function startVisualizerAnimation() {
+        stopVisualizerAnimation();
+        visualizerTimer = setInterval(() => {
+          if (!state.isPlayingTone || state.isMuted || state.volume === 0) {
+            visualizerBars.forEach(bar => bar.style.height = '4px');
+            return;
+          }
+          const baseHeight = (state.volume / 100) * 16 + 4;
+          visualizerBars.forEach((bar, idx) => {
+            const randomVariance = Math.sin(Date.now() / 160 + idx) * 6;
+            const h = Math.max(3, Math.min(20, baseHeight + randomVariance));
+            bar.style.height = h + 'px';
+          });
+        }, 80);
+      }
+
+      function stopVisualizerAnimation() {
+        if (visualizerTimer) {
+          clearInterval(visualizerTimer);
+          visualizerTimer = null;
+        }
+        visualizerBars.forEach(bar => bar.style.height = '6px');
+      }
+
+      // Update State & UI
+      function setVolume(newVal, triggerSound = true) {
+        const clamped = Math.max(0, Math.min(100, Math.round(newVal)));
+        const oldVal = state.volume;
+        state.volume = clamped;
+
+        if (clamped > 0 && state.isMuted) {
+          state.isMuted = false;
+        } else if (clamped === 0) {
+          state.isMuted = true;
+        }
+
+        state.streamVolumes[state.currentStream] = clamped;
+        renderUI();
+
+        if (triggerSound && oldVal !== clamped) {
+          playFeedbackTick(clamped);
+        }
+
+        updateActiveToneVolume();
+      }
+
+      function toggleMute() {
+        if (state.isMuted) {
+          state.isMuted = false;
+          const restore = state.previousVolume > 0 ? state.previousVolume : 50;
+          state.volume = restore;
+          playToneChime(523.25, 0.15);
+        } else {
+          state.previousVolume = state.volume > 0 ? state.volume : 50;
+          state.isMuted = true;
+          state.volume = 0;
+          playToneChime(329.63, 0.08);
+        }
+        state.streamVolumes[state.currentStream] = state.volume;
+        renderUI();
+        updateActiveToneVolume();
+      }
+
+      function getVolumeIconHTML(val, muted) {
+        if (muted || val === 0) return ICONS.mute;
+        if (val <= 33) return ICONS.low;
+        if (val <= 66) return ICONS.medium;
+        return ICONS.high;
+      }
+
+      function getVolumeDescriptor(val, muted) {
+        if (muted || val === 0) return 'Muted';
+        if (val <= 25) return 'Gentle';
+        if (val <= 50) return 'Subtle';
+        if (val <= 75) return 'Comfortable';
+        if (val < 100) return 'Vibrant';
+        return 'Max';
+      }
+
+      function renderUI() {
+        const effectiveVal = state.isMuted ? 0 : state.volume;
+        const iconHtml = getVolumeIconHTML(state.volume, state.isMuted);
+        const descriptor = getVolumeDescriptor(state.volume, state.isMuted);
+
+        // Display numbers
+        volumePercentDisplay.textContent = effectiveVal;
+        internalPercentH.textContent = effectiveVal + '%';
+        internalPercentV.textContent = effectiveVal + '%';
+        volumeLevelDescriptor.textContent = descriptor;
+        volumeLevelDescriptorV.textContent = descriptor;
+
+        // Sliders
+        horizontalFillTrack.style.width = effectiveVal + '%';
+        horizontalGlowEdge.style.left = `calc(${effectiveVal}% - 4px)`;
+        horizontalGlowEdge.style.opacity = effectiveVal > 3 ? '1' : '0';
+
+        verticalFillTrack.style.height = effectiveVal + '%';
+        verticalGlowEdge.style.bottom = `calc(${effectiveVal}% - 4px)`;
+        verticalGlowEdge.style.opacity = effectiveVal > 3 ? '1' : '0';
+
+        speakerIconContainerH.innerHTML = iconHtml;
+        speakerIconContainerV.innerHTML = iconHtml;
+
+        // Status Bar Tile Sync
+        statusBarFill.style.width = effectiveVal + '%';
+        statusBarPercentText.textContent = effectiveVal + '%';
+        statusBarSpeakerIcon.textContent = (state.isMuted || effectiveVal === 0) ? '🔇' : (effectiveVal <= 45 ? '🔉' : '🔊');
+
+        if (state.isMuted) {
+          muteStatusBadge.classList.remove('hidden');
+          streamMoodSubtitle.textContent = 'Muted in Status Bar • Tap to restore';
+          volumePercentDisplay.classList.add('text-rose-500');
+          statusBarPercentText.classList.add('text-rose-500');
+        } else {
+          muteStatusBadge.classList.add('hidden');
+          streamMoodSubtitle.textContent = 'Connected to Status Bar Tile';
+          volumePercentDisplay.classList.remove('text-rose-500');
+          statusBarPercentText.classList.remove('text-rose-500');
+        }
+
+        // Preset active states
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+          const val = parseInt(btn.dataset.val, 10);
+          if (val === effectiveVal) {
+            btn.classList.add('bg-purple-100', 'dark:bg-purple-950/60', 'text-purple-700', 'dark:text-purple-300', 'border-purple-300/70', 'font-semibold');
+            btn.classList.remove('bg-stone-100/80', 'dark:bg-stone-800/80', 'text-slate-600', 'dark:text-slate-300', 'border-stone-200/60');
+          } else {
+            btn.classList.remove('bg-purple-100', 'dark:bg-purple-950/60', 'text-purple-700', 'dark:text-purple-300', 'border-purple-300/70', 'font-semibold');
+            btn.classList.add('bg-stone-100/80', 'dark:bg-stone-800/80', 'text-slate-600', 'dark:text-slate-300', 'border-stone-200/60');
+          }
+        });
+
+        // Home Screen Widget & QS Tile Sync
+        const widgetProgressBarFill = document.getElementById('widgetProgressBarFill');
+        const widgetPercentBadge = document.getElementById('widgetPercentBadge');
+        const widgetIcon = document.getElementById('widgetIcon');
+        const widgetStatusSubtitle = document.getElementById('widgetStatusSubtitle');
+        const qsTileInteractiveBtn = document.getElementById('qsTileInteractiveBtn');
+        const qsTileLabel = document.getElementById('qsTileLabel');
+        const qsTileSubtitle = document.getElementById('qsTileSubtitle');
+        const qsTileIcon = document.getElementById('qsTileIcon');
+
+        if (widgetProgressBarFill) widgetProgressBarFill.style.width = effectiveVal + '%';
+        if (widgetPercentBadge) widgetPercentBadge.textContent = effectiveVal + '%';
+        if (widgetIcon) widgetIcon.textContent = (state.isMuted || effectiveVal === 0) ? '🔇' : (effectiveVal <= 45 ? '🔉' : '🔊');
+        if (widgetStatusSubtitle) widgetStatusSubtitle.textContent = state.isMuted ? 'Muted • Tap to unmute' : 'Media Sound • Live Sync';
+
+        if (qsTileLabel) qsTileLabel.textContent = `Volume ${effectiveVal}%`;
+        if (qsTileSubtitle) qsTileSubtitle.textContent = state.isMuted ? 'Muted' : 'Media Stream';
+        if (qsTileIcon) qsTileIcon.textContent = (state.isMuted || effectiveVal === 0) ? '🔇' : (effectiveVal <= 45 ? '🔉' : '🔊');
+        if (qsTileInteractiveBtn) {
+          if (state.isMuted || effectiveVal === 0) {
+            qsTileInteractiveBtn.classList.remove('bg-purple-300', 'text-slate-800');
+            qsTileInteractiveBtn.classList.add('bg-stone-800', 'text-stone-400');
+          } else {
+            qsTileInteractiveBtn.classList.remove('bg-stone-800', 'text-stone-400');
+            qsTileInteractiveBtn.classList.add('bg-purple-300', 'text-slate-800');
+          }
+        }
+      }
+
+      // Pointer / Touch Gestures for Status Bar Mini Track
+      function setupStatusBarGestures() {
+        const area = statusBarTrack;
+        function updateFromPointer(e) {
+          const rect = area.getBoundingClientRect();
+          const ratio = (e.clientX - rect.left) / rect.width;
+          setVolume(ratio * 100, true);
+        }
+
+        area.addEventListener('pointerdown', (e) => {
+          e.stopPropagation();
+          area.setPointerCapture(e.pointerId);
+          state.isDragging = true;
+          updateFromPointer(e);
+        });
+
+        area.addEventListener('pointermove', (e) => {
+          if (!state.isDragging) return;
+          updateFromPointer(e);
+        });
+
+        const stopDrag = (e) => {
+          if (!state.isDragging) return;
+          state.isDragging = false;
+          try { area.releasePointerCapture(e.pointerId); } catch(err) {}
+          playToneChime(523.25, 0.08);
+        };
+
+        area.addEventListener('pointerup', stopDrag);
+        area.addEventListener('pointercancel', stopDrag);
+
+        // Toggle Quick Settings Shade when clicking the status bar volume tile (outside of track & mute button)
+        statusBarVolumeTile.addEventListener('click', (e) => {
+          if (e.target.closest('#statusBarTrack') || e.target.closest('#statusBarMuteBtn')) return;
+          toggleQuickSettingsShade();
+        });
+
+        statusBarMuteBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleMute();
+        });
+      }
+
+      function toggleQuickSettingsShade() {
+        state.shadeExpanded = !state.shadeExpanded;
+        if (state.shadeExpanded) {
+          quickSettingsShade.classList.remove('collapsed');
+          quickSettingsShade.classList.add('expanded');
+          shadeChevronIcon.style.transform = 'rotate(180deg)';
+        } else {
+          quickSettingsShade.classList.remove('expanded');
+          quickSettingsShade.classList.add('collapsed');
+          shadeChevronIcon.style.transform = 'rotate(0deg)';
+        }
+      }
+
+      // Pointer / Touch Gestures for Horizontal Slider
+      function setupHorizontalGestures() {
+        const area = horizontalTrackArea;
+        function updateFromPointer(e) {
+          const rect = area.getBoundingClientRect();
+          const ratio = (e.clientX - rect.left) / rect.width;
+          setVolume(ratio * 100, true);
+        }
+
+        area.addEventListener('pointerdown', (e) => {
+          if (e.target.closest('#horizontalMuteIconBtn')) return;
+          area.setPointerCapture(e.pointerId);
+          state.isDragging = true;
+          document.body.classList.add('dragging');
+          updateFromPointer(e);
+        });
+
+        area.addEventListener('pointermove', (e) => {
+          if (!state.isDragging) return;
+          updateFromPointer(e);
+        });
+
+        const stopDrag = (e) => {
+          if (!state.isDragging) return;
+          state.isDragging = false;
+          document.body.classList.remove('dragging');
+          try { area.releasePointerCapture(e.pointerId); } catch(err) {}
+          playToneChime(523.25, 0.08);
+        };
+
+        area.addEventListener('pointerup', stopDrag);
+        area.addEventListener('pointercancel', stopDrag);
+      }
+
+      // Pointer / Touch Gestures for Vertical Slider
+      function setupVerticalGestures() {
+        const area = verticalTrackArea;
+        function updateFromPointer(e) {
+          const rect = area.getBoundingClientRect();
+          const ratio = (rect.bottom - e.clientY) / rect.height;
+          setVolume(ratio * 100, true);
+        }
+
+        area.addEventListener('pointerdown', (e) => {
+          if (e.target.closest('#verticalMuteIconBtn')) return;
+          area.setPointerCapture(e.pointerId);
+          state.isDragging = true;
+          document.body.classList.add('dragging');
+          updateFromPointer(e);
+        });
+
+        area.addEventListener('pointermove', (e) => {
+          if (!state.isDragging) return;
+          updateFromPointer(e);
+        });
+
+        const stopDrag = (e) => {
+          if (!state.isDragging) return;
+          state.isDragging = false;
+          document.body.classList.remove('dragging');
+          try { area.releasePointerCapture(e.pointerId); } catch(err) {}
+          playToneChime(523.25, 0.08);
+        };
+
+        area.addEventListener('pointerup', stopDrag);
+        area.addEventListener('pointercancel', stopDrag);
+      }
+
+      function setupMouseWheel() {
+        const wrapper = document.getElementById('sliderTileWrapper');
+        wrapper.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          const delta = e.deltaY < 0 ? 5 : -5;
+          setVolume(state.volume + delta, true);
+        }, { passive: false });
+
+        statusBarVolumeTile.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          const delta = e.deltaY < 0 ? 5 : -5;
+          setVolume(state.volume + delta, true);
+        }, { passive: false });
+      }
+
+      function setupKeyboard() {
+        window.addEventListener('keydown', (e) => {
+          if (['ArrowLeft', 'ArrowDown'].includes(e.key)) {
+            e.preventDefault();
+            setVolume(state.volume - (e.shiftKey ? 10 : 2), true);
+          } else if (['ArrowRight', 'ArrowUp'].includes(e.key)) {
+            e.preventDefault();
+            setVolume(state.volume + (e.shiftKey ? 10 : 2), true);
+          } else if (e.key === 'Home') {
+            e.preventDefault();
+            setVolume(0, true);
+          } else if (e.key === 'End') {
+            e.preventDefault();
+            setVolume(100, true);
+          } else if (e.key === 'PageDown') {
+            e.preventDefault();
+            setVolume(state.volume - 10, true);
+          } else if (e.key === 'PageUp') {
+            e.preventDefault();
+            setVolume(state.volume + 10, true);
+          } else if (e.key.toLowerCase() === 'm') {
+            e.preventDefault();
+            toggleMute();
+          } else if (e.key === ' ') {
+            e.preventDefault();
+            toggleTonePreview();
+          }
+        });
+      }
+
+      function setupPresetButtons() {
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const targetVal = parseInt(btn.dataset.val, 10);
+            setVolume(targetVal, true);
+            playToneChime(440 + targetVal * 2.5, 0.12);
+          });
+        });
+      }
+
+      function setupStreamButtons() {
+        document.querySelectorAll('.stream-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.stream-btn').forEach(b => {
+              b.classList.remove('active', 'text-slate-800', 'dark:text-slate-100', 'bg-pastel-lavenderLight', 'dark:bg-purple-900/40', 'shadow-xs');
+              b.classList.add('text-slate-500', 'dark:text-slate-400');
+            });
+            btn.classList.add('active', 'text-slate-800', 'dark:text-slate-100', 'bg-pastel-lavenderLight', 'dark:bg-purple-900/40', 'shadow-xs');
+            btn.classList.remove('text-slate-500', 'dark:text-slate-400');
+
+            const stream = btn.dataset.stream;
+            state.currentStream = stream;
+
+            const labels = {
+              media: 'Media Volume',
+              ring: 'Ring & Notifications',
+              alarm: 'Alarm Volume',
+              call: 'In-Call Voice'
+            };
+            currentStreamLabel.textContent = labels[stream] || 'Volume';
+            setVolume(state.streamVolumes[stream] ?? 70, true);
+          });
+        });
+      }
+
+      function setupPaletteButtons() {
+        const palettes = ['palette-lilac', 'palette-peach', 'palette-mint', 'palette-sky', 'palette-butter'];
+        document.querySelectorAll('.palette-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const theme = btn.dataset.theme;
+            palettes.forEach(p => document.body.classList.remove(p));
+            document.body.classList.add(theme);
+
+            document.querySelectorAll('.palette-btn').forEach(b => {
+              b.classList.remove('ring-2', 'ring-purple-400', 'scale-110');
+            });
+            btn.classList.add('ring-2', 'ring-purple-400', 'scale-110');
+            playToneChime(659.25, 0.1);
+          });
+        });
+      }
+
+      function setupLayoutToggle() {
+        toggleLayoutBtn.addEventListener('click', () => {
+          if (state.layout === 'horizontal') {
+            state.layout = 'vertical';
+            horizontalSliderView.classList.add('hidden');
+            verticalSliderView.classList.remove('hidden');
+            layoutModeIcon.textContent = '↕️';
+            layoutModeText.textContent = 'Capsule Mode';
+          } else {
+            state.layout = 'horizontal';
+            horizontalSliderView.classList.remove('hidden');
+            verticalSliderView.classList.add('hidden');
+            layoutModeIcon.textContent = '↔️';
+            layoutModeText.textContent = 'Pill Mode';
+          }
+        });
+      }
+
+      function setupSoundFeedbackToggle() {
+        toggleSoundFeedbackBtn.addEventListener('click', () => {
+          state.soundFeedback = !state.soundFeedback;
+          if (state.soundFeedback) {
+            soundFeedbackStatusIcon.textContent = '🔔';
+            soundFeedbackStatusText.textContent = 'Chime On';
+            toggleSoundFeedbackBtn.classList.remove('opacity-50');
+            playToneChime(580, 0.1);
+          } else {
+            soundFeedbackStatusIcon.textContent = '🔕';
+            soundFeedbackStatusText.textContent = 'Chime Muted';
+            toggleSoundFeedbackBtn.classList.add('opacity-50');
+          }
+        });
+      }
+
+      function setupThemeToggle() {
+        toggleThemeBtn.addEventListener('click', () => {
+          state.isDark = !state.isDark;
+          if (state.isDark) {
+            document.body.classList.add('dark');
+            themeModeIcon.textContent = '🌙';
+            themeModeText.textContent = 'Dark Mode';
+          } else {
+            document.body.classList.remove('dark');
+            themeModeIcon.textContent = '☀️';
+            themeModeText.textContent = 'Light Mode';
+          }
+        });
+      }
+
+      function setupWidgetAndQSEvents() {
+        const btnMute = document.getElementById('widgetBtnMute');
+        const btnDown = document.getElementById('widgetBtnDown');
+        const btnUp = document.getElementById('widgetBtnUp');
+        const track = document.getElementById('widgetProgressBarTrack');
+        const toggleSizeBtn = document.getElementById('widgetToggleSizeBtn');
+        const qsTileBtn = document.getElementById('qsTileInteractiveBtn');
+        const qsCycleBtn = document.getElementById('qsCycleStepBtn');
+        const controlsRow = document.getElementById('widgetControlsRow');
+
+        if (btnMute) btnMute.addEventListener('click', toggleMute);
+        if (btnDown) btnDown.addEventListener('click', () => setVolume(state.volume - 10, true));
+        if (btnUp) btnUp.addEventListener('click', () => setVolume(state.volume + 10, true));
+
+        document.querySelectorAll('.widget-preset-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const val = parseInt(btn.dataset.val, 10);
+            setVolume(val, true);
+            playToneChime(460 + val * 2, 0.1);
+          });
+        });
+
+        if (track) {
+          track.addEventListener('click', (e) => {
+            const rect = track.getBoundingClientRect();
+            const ratio = (e.clientX - rect.left) / rect.width;
+            setVolume(ratio * 100, true);
+          });
+        }
+
+        let isCompactWidget = false;
+        if (toggleSizeBtn && controlsRow) {
+          toggleSizeBtn.addEventListener('click', () => {
+            isCompactWidget = !isCompactWidget;
+            if (isCompactWidget) {
+              controlsRow.classList.add('hidden');
+              toggleSizeBtn.textContent = '2x1 Compact';
+            } else {
+              controlsRow.classList.remove('hidden');
+              toggleSizeBtn.textContent = '4x2 Standard';
+            }
+          });
+        }
+
+        const cycleQsStep = () => {
+          const cur = state.isMuted ? 0 : state.volume;
+          const next = cur === 0 ? 30 : (cur < 45 ? 70 : (cur < 85 ? 100 : 0));
+          setVolume(next, true);
+          playToneChime(next === 0 ? 320 : 540, 0.12);
+        };
+
+        if (qsTileBtn) qsTileBtn.addEventListener('click', cycleQsStep);
+        if (qsCycleBtn) qsCycleBtn.addEventListener('click', cycleQsStep);
+      }
+
+      function init() {
+        document.getElementById('horizontalMuteIconBtn').addEventListener('click', toggleMute);
+        document.getElementById('verticalMuteIconBtn').addEventListener('click', toggleMute);
+        playAudioPreviewBtn.addEventListener('click', toggleTonePreview);
+        shadeSynthTileBtn.addEventListener('click', toggleTonePreview);
+
+        setupStatusBarGestures();
+        setupHorizontalGestures();
+        setupVerticalGestures();
+        setupMouseWheel();
+        setupKeyboard();
+        setupPresetButtons();
+        setupStreamButtons();
+        setupPaletteButtons();
+        setupLayoutToggle();
+        setupSoundFeedbackToggle();
+        setupThemeToggle();
+        setupWidgetAndQSEvents();
+
+        renderUI();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+
+    })();
+  </script>
+</body>
+</html>

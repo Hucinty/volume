@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Volume Slider</string>
+    <string name="qs_tile_volume_label">Volume</string>
+    <string name="qs_tile_volume_desc">Volume slider and quick mute toggle</string>
+    <string name="widget_title">Pastel Volume Widget</string>
+    <string name="widget_description">Pastel home screen volume control widget with quick presets and mute</string>
+</resources>
